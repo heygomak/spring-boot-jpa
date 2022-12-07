@@ -1,7 +1,10 @@
 package jpabook.jpashop.domain;
 
+import jpabook.jpashop.domain.codes.DeliveryStatus;
 import jpabook.jpashop.domain.codes.OrderStatus;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +15,8 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+// @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// -> protected 생성자와 동일한 역할 (lombok 지원)
 public class Order {
 
     @Id @GeneratedValue
@@ -53,5 +58,40 @@ public class Order {
         this.delivery = delivery;
         // 주문이 생성될때 배달 테이블에 주문정보 업데이트
         delivery.setOrder(this);
+    }
+
+    // 주문 생성은 여기서만 통제할거야 !! 다른데서 만들지마
+    protected Order() {}
+
+    // === 주문 생성매서드
+    // * 장점 : 도메인에서 주문 로직을 완결시킴으로써, 주문 생성 유지보수는 여기서만 하면 된다
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for(OrderItem orderItem : orderItems) {
+            order.addOrderItems(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    // === 비즈니스로직
+    public void cancelOrder() {
+        if(delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송완료된 주문은 취소가 불가능합니다.");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancelOrder();
+        }
+    }
+
+    // === 조회로직
+    // 전체 주문 금액 조회
+    public int totalPrice() {
+        // 주문 라인 별 합계금액 (주문가격*수량)을 sum 한 것이 최총 주문 가격
+        return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
     }
 }

@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,4 +36,20 @@ public abstract class Item {
 
     @ManyToMany(mappedBy = "items")
     private List<Category> caterogies = new ArrayList<Category>();
+
+    // === 엔터티 내에 비즈니스 로직을 포함하고 있음 -> DDD 방식
+    // === 데이터를 가지고 있는 쪽에 비즈니스 로직이 존재해야 응집력을 높일 수 있다
+    // 재고 증가
+    public void addStock(int quantity) {
+        this.stockQuantity += quantity;
+    }
+
+    // 재고 감소
+    public void removeStock(int quantity) {
+        int remainQuantity = this.stockQuantity - quantity;
+        if(remainQuantity < 0) {
+            throw new NotEnoughStockException("need more stock");
+        }
+        this.stockQuantity = remainQuantity;
+    }
 }

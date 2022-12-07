@@ -30,7 +30,7 @@ public class MemberRepository {
 
     // 회원명 조건으로 회원 목록 조회
     public List<Member> findByName(String username) {
-        return em.createQuery("select m from Member m where m.username = :username", Member.class).
-                setParameter("username", username).getResultList();
+        return em.createQuery("select m from Member m where m.username = :username",
+                        Member.class).setParameter("username", username).getResultList();
     }
 }
