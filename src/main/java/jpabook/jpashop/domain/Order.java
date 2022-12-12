@@ -90,7 +90,7 @@ public class Order {
 
     // === 조회로직
     // 전체 주문 금액 조회
-    public int totalPrice() {
+    public int getTotalPrice() {
         // 주문 라인 별 합계금액 (주문가격*수량)을 sum 한 것이 최총 주문 가격
         return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
     }
