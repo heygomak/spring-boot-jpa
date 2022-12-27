@@ -18,7 +18,7 @@ public class Delivery {
     private Order order;
 
     @Embedded
-    private Adress adress;
+    private Address adress;
 
     /**
      * EnumType

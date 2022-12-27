@@ -18,7 +18,7 @@ public class Member {
 
     // @Embedded: 내장타입 컬럼 명시
     @Embedded
-    private Adress adress;
+    private Address address;
 
     // mappedBy: Orders 테이블의 member 컬럼에 의해 맵핑된 컬럼 명시 (읽기전용)
     @OneToMany(mappedBy  = "member")

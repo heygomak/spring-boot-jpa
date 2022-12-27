@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Adress;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
@@ -103,7 +104,7 @@ public class OrderServiceTest {
     private Member getMember() {
         Member member = new Member();
         member.setUsername("동동이11");
-        member.setAdress(new Adress("서울", "중구", "123-123"));
+        member.setAddress(new Address("서울", "중구", "123-123"));
         em.persist(member);
         return member;
     }
